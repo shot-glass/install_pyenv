@@ -38,9 +38,11 @@
 : "pyenv用rcファイル作成" &&{
   test -f ${rc_file} ||\
     cat <<-'EOF' >/tmp/${rc_file}
+      if [ -d ${HOME}/.pyenv ]; then
 	export PATH="${HOME}/.pyenv/bin:$PATH"
 	eval "$(pyenv init -)"
 	eval "$(pyenv virtualenv-init -)"
+      fi
 	EOF
 
   sudo chown root:root  /tmp/${rc_file}
