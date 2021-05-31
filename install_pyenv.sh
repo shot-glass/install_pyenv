@@ -24,7 +24,7 @@
       sudo yum install -y ${yum_packages[*]}
     ;;
     debian)
-      sudo apt install -y ${apt_packages[*]}
+      sudo apt-get install -y ${apt_packages[*]}
     ;;
     *) echo "${ID} is not supported." ;;
   esac
