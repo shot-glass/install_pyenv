@@ -21,11 +21,9 @@
   source /etc/os-release
   case ${ID_LIKE} in
     "rhel fedora")
-      sudo yum update
       sudo yum install -y ${yum_packages[*]}
     ;;
     debian)
-      sudo apt update
       sudo apt install -y ${apt_packages[*]}
     ;;
     *) echo "${ID} is not supported." ;;
