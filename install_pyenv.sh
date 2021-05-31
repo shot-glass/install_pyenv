@@ -36,15 +36,8 @@
 }
 
 : "pyenv用rcファイル作成" &&{
-  test -f ${rc_file} ||\
-    cat <<-'EOF' >/tmp/${rc_file}
-      if [ -d ${HOME}/.pyenv ]; then
-	export PATH="${HOME}/.pyenv/bin:$PATH"
-	eval "$(pyenv init -)"
-	eval "$(pyenv virtualenv-init -)"
-      fi
-	EOF
-
+  test -f /tmp/${rc_file} ||\
+    echo -e 'if [ -d ${HOME}/.pyenv ]; then\n'"$(pyenv init 2>&1 | egrep -v '^#|^$')\n$(pyenv virtualenv-init -)\nfi" >/tmp/${rc_file}
   sudo chown root:root  /tmp/${rc_file}
   sudo mv /{tmp,etc/profile.d}/${rc_file}
 
