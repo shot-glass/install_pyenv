@@ -38,7 +38,15 @@
 
 : "pyenv用rcファイル作成" &&{
   test -f /tmp/${rc_file} ||\
-    echo -e 'if [ -d ${HOME}/.pyenv ]; then\n'"$(pyenv init 2>&1 | egrep -v '^#|^$')\ntest -d $(pyenv root)/plugins/pyenv-virtualenv && $(pyenv virtualenv-init -)\nfi" >/tmp/${rc_file}
+  cat <<-'EOF' >/tmp/${rc_file}
+pyenv_dir=${HOME}/.pyenv
+pyenv_virtualenv_dir=${pyenv_dir}/plugins/pyenv-virtualenv
+if [ -d ${pyenv_dir} ]; then
+	source <(${pyenv_dir}/bin/pyenv init 2>&1)
+	test -d ${pyenv_virtualenv_dir} && eval "$(pyenv virtualenv-init - 2>&1)"
+fi
+EOF
+
   sudo chown root:root  /tmp/${rc_file}
   sudo mv /{tmp,etc/profile.d}/${rc_file}
 
