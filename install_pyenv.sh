@@ -9,6 +9,7 @@
   apt_packages=(git gcc make sshpass libsqlite3-dev libssl-dev libffi-dev zlib1g zlib1g-dev libbz2-dev libreadline-dev)
 
   pyenv_url="https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer"
+  pyenv_virtualenv_url="https://github.com/pyenv/pyenv-virtualenv.git"
   pip_url="https://bootstrap.pypa.io/get-pip.py"
 
   pyenv_dir=${HOME}/.pyenv
@@ -37,11 +38,15 @@
 
 : "pyenv用rcファイル作成" &&{
   test -f /tmp/${rc_file} ||\
-    echo -e 'if [ -d ${HOME}/.pyenv ]; then\n'"$(pyenv init 2>&1 | egrep -v '^#|^$')\n$(pyenv virtualenv-init -)\nfi" >/tmp/${rc_file}
+    echo -e 'if [ -d ${HOME}/.pyenv ]; then\n'"$(pyenv init 2>&1 | egrep -v '^#|^$')\ntest -d $(pyenv root)/plugins/pyenv-virtualenv && $(pyenv virtualenv-init -)\nfi" >/tmp/${rc_file}
   sudo chown root:root  /tmp/${rc_file}
   sudo mv /{tmp,etc/profile.d}/${rc_file}
 
   source /etc/profile.d/${rc_file}
+}
+
+: "pyenv-virtualenvインストール" && {
+  git clone ${pyenv_virtualenv_url} $(pyenv root)/plugins/pyenv-virtualenv
 }
 
 : "pytrhon実行環境のインストールと有効化" && {
